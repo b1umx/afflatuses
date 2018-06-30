@@ -6,9 +6,8 @@ from queue import Queue
 
 class Task():
 
-    def __init__(self, obj_id, function, *args, **kwargs):
-        self.obj_id = obj_id
-        self.function = function
+    def __init__(self, func, *args, **kwargs):
+        self.func = func
         self.args = args
         self.kwargs = kwargs
         self.uuid = uuid.uuid1()
@@ -20,12 +19,12 @@ class TaskManager():
         super().__init__()
         self.queue = Queue()
         self.registry = {}
-        self.worker = Worker(self.queue, self.registry)
+        self.worker = Worker(self)
         self.worker.setDaemon(True)
         self.worker.start()
 
-    def create_task(self, obj_id, function, *args, **kwargs):
-        task = Task(obj_id, function, *args, **kwargs)
+    def create_task(self, obj_id, func, *args, **kwargs):
+        task = Task(obj_id, func, *args, **kwargs)
         self.queue.put(task)
         self.registry[task.uuid] = 'waiting'
 
@@ -33,30 +32,58 @@ class TaskManager():
 
     def get_task_status(self, uuid):
         status = self.registry.get(uuid)
-        if status == 'completed':
+        if status in ('completed', 'failed'):
             del self.registry[uuid]
 
         return status
 
+    def stop(self):
+        self.worker.stop()
+
+    def resume(self):
+        self.worker = Worker(self)
+        self.worker.start()
+
+    def is_running(self):
+        if self.worker is None:
+            return False
+        else:
+            return self.worker.is_alive()
+
+    def clear(self):
+        self.worker = None
+
 
 class Worker(threading.Thread):
 
-    def __init__(self, queue, registry):
+    def __init__(self, manager):
         super().__init__()
-        self.queue = queue
-        self.registry = registry
+        self.queue = manager.queue
+        self.registry = manager.registry
+        self.manager = manager
+        self.running = True
 
     def run(self):
-        while True:
+        while self.running:
+            print('Пробуем взять')
             task = self.queue.get()
+            print('# Берем новое задание:', task.uuid)
             self.registry[task.uuid] = 'running'
             try:
-                task.function(*task.args, **task.kwargs)
+                task.func(*task.args, **task.kwargs)
                 self.queue.task_done()
                 self.registry[task.uuid] = 'completed'
             except:
                 self.queue.task_done()
                 self.registry[task.uuid] = 'failed'
+
+        self.manager.clear()
+
+    def stop(self):
+        self.running = False
+
+    def __del__(self):
+        print('Поток удален')
 
 
 def example(t, name='empty'):
@@ -70,20 +97,38 @@ def bad_example(t, name='empty'):
 
 manager = TaskManager()
 
-long_task = manager.create_task(1, example, 5, name='Long Task')
-wait_task = manager.create_task(2, example, 1, name='Wait Task')
+first_task = manager.create_task(example, 3, name='First Task')
+second_task = manager.create_task(example, 3, name='Second Task')
 
-print('Статус Long Task:', manager.get_task_status(long_task))
-print('Статус Wait Task:', manager.get_task_status(wait_task))
+print('Статус [First Task]:', manager.get_task_status(first_task))
+print('Статус [Second Task]:', manager.get_task_status(second_task))
 
-time.sleep(10)
+print('Статус менеджера до паузы (Статус [First Task]: {}): {}'.format(manager.get_task_status(first_task),
+                                                                       manager.is_running()))
+manager.stop()
+print('Статус менеджера после паузы (Статус [First Task]: {}): {}'.format(manager.get_task_status(first_task),
+                                                                          manager.is_running()))
 
-print('Статус Long Task:', manager.get_task_status(long_task))
-print('Статус Wait Task:', manager.get_task_status(wait_task))
+time.sleep(5)
 
-bad_task = manager.create_task(3, bad_example, 1, name='Bad Task')
+print('Статус менеджера после паузы (Статус [First Task]: {}): {}'.format(manager.get_task_status(first_task),
+                                                                          manager.is_running()))
+manager.resume()
+print('Статус менеджера после возобновления:', manager.is_running())
+
+time.sleep(5)
+
+print('Статус First Task:', manager.get_task_status(first_task))
+print('Статус Second Task:', manager.get_task_status(second_task))
+
+bad_task = manager.create_task(bad_example, 1, name='Bad Task')
 
 time.sleep(2)
 print('Статус Bad Task:', manager.get_task_status(bad_task))
-print('Статус Long Task:', manager.get_task_status(long_task))
-print('Статус Wait Task:', manager.get_task_status(wait_task))
+print('Статус First Task:', manager.get_task_status(first_task))
+print('Статус Second Task:', manager.get_task_status(second_task))
+
+manager.stop()
+
+time.sleep(5)
+last_task = manager.create_task(example, 1, name='Last Task')
