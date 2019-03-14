@@ -1,0 +1,172 @@
+$sbm-width: 21rem;
+$sbm-collapsed-width: 5rem;
+$sbm-title-color: #cecece;
+$sbm-item-color: #a2a0a0;
+$sbm-item-hover-color: #ffffff;
+$sbm-item-hover-bg-color: #1a2432;
+$sbm-item-active-color: #ffffff;
+$sbm-item-active-bg-color: #00b297;
+$sbm-item-expanded-color: #ffffff;
+$sbm-item-expanded-bg-color: #141d28;
+$sbm-submenu-bg-color: #1a2432;
+$sbm-subitem-hover-color: #17a2b8;
+$sbm-subitem-active-color: #17a2b8;
+$sbm-bg-color: #1d2939;
+
+.sidebar {
+    position: fixed;
+    z-index: 100;
+    top: 5rem;
+    bottom: 0;
+    width: $sbm-width;
+    background-color: $sbm-bg-color;
+    padding-left: 10px;
+    padding-right: 10px;
+    transition: width 0.2s ease-in-out;
+
+    .menu-title {
+        display: block;
+        margin-top: 20px;
+        margin-bottom: 0.5rem;
+        padding-left: 15px;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        color: $sbm-title-color;
+        opacity: 0.7;
+        letter-spacing: 1px;
+        white-space: nowrap;
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .menu-item-container {
+        color: $sbm-item-color;
+        display: block;
+        
+        .menu {
+            transition: none;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            align-items: center;
+            border-radius: 2px;
+            padding: 0 15px;
+            height: 3.35rem;
+            font-size: 1rem;
+            cursor: pointer;
+
+            &:hover {
+                color: $sbm-item-hover-color;
+                background-color: $sbm-item-hover-bg-color;
+            }
+
+            &.expanded {
+                color: $sbm-item-expanded-color;
+                background-color: $sbm-item-expanded-bg-color;
+            }
+
+            &.active {
+                color: $sbm-item-active-color;
+                background-color: $sbm-item-active-bg-color;
+            }
+        }
+
+        .menu-item-icon {
+            font-size: 1.5rem;
+            width: 22px;
+            margin-top: -1px;
+            margin-right: 0;
+        }
+
+        .stand-in-icon {
+            display: inline-block;
+            width: 22px;
+            margin-right: 0.25rem;
+        }
+
+        .menu-item-label {
+            white-space: nowrap;
+            margin-left: 10px;
+            margin-right: auto;
+            opacity: 1;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        .menu-item-arrow {
+            font-size: 1rem;
+            margin-top: -0.5rem;
+            opacity: 1;
+            transition: opacity 0.4s ease-in-out;
+        }
+
+        .sub-menu {
+            display: block;
+            margin: 0;
+            padding-left: 0.5rem 0 0.5rem 2.25rem;
+            list-style: none;
+            font-size: 1rem;
+            background-color: $sbm-submenu-bg-color;
+            border-bottom-right-radius: 3px;
+            border-bottom-left-radius: 3px;
+            transition: max-height 1s ease-out;
+
+            .menu-sub-item > a {
+                display: block;
+                position: relative;
+                padding: 0.5rem 1rem;
+                white-space: nowrap;
+
+                &::before {
+                    content: '';
+                    position: absolute;
+                    top: 50%;
+                    left: -5px;
+                    width: 5px;
+                    height: 1px;
+                    background-color: $sbm-item-color;
+                    transition: all 0.2s ease-out;
+                }
+
+                &:hover {
+                    color: $sbm-subitem-hover-color;
+
+                    &::before {
+                        left: -10px;
+                        width: 15px;
+                        background-color: $sbm-subitem-hover-color;
+                    }
+                }
+
+                &.active {
+                    color: $sbm-subitem-active-color;
+
+                    &::before {
+                        left: -10px;
+                        width: 15px;
+                        background-color: $sbm-subitem-active-color;
+                    }
+                }
+            }
+        }
+    }
+
+    &.collapsed {
+        width: $sbm-collapsed-width;
+
+        .menu-title {
+            visibility: hidden;
+            opacity: 0 !important;
+        }
+    
+        .menu-item-label, .menu-item-arrow {
+            visibility: hidden;
+            opacity: 0 !important;
+        }
+
+        .menu-item-icon {
+            margin-left: -4px;
+        }
+    }
+}
