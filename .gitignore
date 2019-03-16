@@ -1,0 +1,5 @@
+*~
+.directory
+.vscode/
+dist/
+node_modules/
