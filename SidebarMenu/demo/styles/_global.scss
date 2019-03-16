@@ -1,0 +1,90 @@
+html {
+    font-size: 12px;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+}
+
+a, a:hover, a:active, a:visited {
+    color: inherit;
+    text-decoration: none;
+}
+
+.logo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: $left-panel-width;
+    height: $top-line-height;
+    background-color: #ffffff;
+    border-right: 1px solid rgba(0, 0, 0, 0.15);
+    font-size: 2rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    padding-left: 25px;
+    transition: left 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.main-toolbar {
+    position: fixed;
+    z-index: 99;
+    top: 0;
+    right: 0;
+    left: $left-panel-width;
+    height: $top-line-height;
+    background-color: #ffffff;
+    box-shadow: 0 1px 4px 0px rgba(0, 0, 0, 0.16);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: left 0.2s ease-in-out;
+
+    .toggle-left-panel-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: $top-line-height;
+        height: $top-line-height;
+        border-right: 1px solid rgba(0, 0, 0, 0.15);
+        cursor: pointer;
+        
+        i {
+            color: $mt-color;
+            font-size: 20px;
+            transition: color 0.3s ease;
+        }
+
+        &:hover i {
+            color: darken($mt-color, 25%);
+        }
+    }
+}
+
+.main-panel {
+    position: relative;
+    margin-top: $top-line-height;
+    margin-left: $left-panel-width;
+    transition: margin 0.2s ease-in-out;
+
+    div {
+        padding: 3rem 1.5rem 0 2rem;
+    }
+}
+
+.shifted-left {
+    .logo {
+        left: -$left-panel-width;
+    }
+    
+    .main-toolbar {
+        left: 0;
+    }
+
+    .main-panel {
+        margin-left: $top-line-height;
+    }
+}

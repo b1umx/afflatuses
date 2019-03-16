@@ -1,5 +1,5 @@
-$sbm-width: 21rem;
-$sbm-collapsed-width: 5rem;
+$left-panel-width: 280px;
+$top-line-height: 60px;
 $sbm-title-color: #cecece;
 $sbm-item-color: #a2a0a0;
 $sbm-item-hover-color: #ffffff;
@@ -18,7 +18,7 @@ $sbm-bg-color: #1d2939;
     z-index: 100;
     top: 5rem;
     bottom: 0;
-    width: $sbm-width;
+    width: $left-panel-width - 20px;
     background-color: $sbm-bg-color;
     padding-left: 10px;
     padding-right: 10px;
@@ -27,7 +27,7 @@ $sbm-bg-color: #1d2939;
     .menu-title {
         display: block;
         margin-top: 20px;
-        margin-bottom: 0.5rem;
+        margin-bottom: 1rem;
         padding-left: 15px;
         text-transform: uppercase;
         font-size: 0.85rem;
@@ -104,18 +104,17 @@ $sbm-bg-color: #1d2939;
         .sub-menu {
             display: block;
             margin: 0;
-            padding-left: 0.5rem 0 0.5rem 2.25rem;
+            padding: 0.5rem 0 0.5rem 2.25rem;
             list-style: none;
             font-size: 1rem;
             background-color: $sbm-submenu-bg-color;
             border-bottom-right-radius: 3px;
             border-bottom-left-radius: 3px;
-            transition: max-height 1s ease-out;
 
             .menu-sub-item > a {
                 display: block;
                 position: relative;
-                padding: 0.5rem 1rem;
+                padding: 0.7rem 1rem;
                 white-space: nowrap;
 
                 &::before {
@@ -153,7 +152,7 @@ $sbm-bg-color: #1d2939;
     }
 
     &.collapsed {
-        width: $sbm-collapsed-width;
+        width: $top-line-height - 20px;
 
         .menu-title {
             visibility: hidden;

@@ -4,6 +4,8 @@ import classNames from 'classnames';
 
 import MenuItem from './MenuItem';
 
+import './sidebarMenu.scss';
+
 /**
  * Компонент отображает левую фиксированную боковую панель с меню. Боковая 
  * панель может быть частично скрыта (урезана) с помощью параметра. При 

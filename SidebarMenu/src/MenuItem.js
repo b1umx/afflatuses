@@ -3,7 +3,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
 
-import { Icon, Transition } from 'semantic-ui-react';
+import AnimateHeight from 'react-animate-height';
 
 import MenuSubItem from './MenuSubItem';
 
@@ -69,6 +69,7 @@ class MenuItem extends React.Component {
     super(props);
 
     this.handleClick = this.handleClick.bind(this);
+    this.shouldExpandSubMenu = this.shouldExpandSubMenu.bind(this);
   }
 
   /**
@@ -85,37 +86,38 @@ class MenuItem extends React.Component {
     this.props.handleToggleItem(this.props.label);
   }
 
+  shouldExpandSubMenu() {
+    return this.props.subItems.length > 0 
+      && this.props.label === this.props.expandedItem 
+      && (!this.props.collapsed || this.props.focused)
+  }
+
   render() {
     return (this.props.subItems && this.props.subItems.length > 0) ? (
       /* Если есть подменю */
       <div className="menu-item-container">
         <NavLink className={classNames('menu-item', 
-            { 'expanded': this.props.subItems.length > 0 
-              && this.props.label === this.props.expandedItem 
-              && (!this.props.collapsed || this.props.focused) })} 
+            { 'expanded': this.shouldExpandSubMenu() })} 
             onClick={this.handleClick} to={this.props.link}>
           
-          <Icon className="menu-item-icon" name={this.props.icon} />
+          <i className={classNames("menu-item-icon", this.props.icon)} ></i>
           <span className={classNames('menu-item-label', 
               { hide: this.props.hide })}>
             {this.props.label}
           </span>
-          <Icon className={classNames('menu-item-arrow', 
-              { hide: this.props.hide })} name="angle down" />
+          <i className="menu-item-arrow fas fa-angle-down"></i>
         
         </NavLink>
         
-        {/* Подменю. Оборачиваем в Transition.Group для реализации анимации */} 
-        <Transition.Group animation="fade down" duration="200">
+        {/* Подменю. Оборачиваем в AnimateHeight для реализации анимации */} 
+        <AnimateHeight duration={300} 
+            height={ this.shouldExpandSubMenu() ? 'auto' : 0 }>
           {/* Подменю показывается только, если родительский пункт меню
               раскрыт и само меню распахнуто */}
-          {this.props.subItems.length > 0 
-            && this.props.label === this.props.expandedItem 
-            && (!this.props.collapsed || this.props.focused) &&
-            <ul className="sub-menu">
-              {this.props.subItems.map(subItem => <MenuSubItem {...subItem} />)}
-            </ul>}
-        </Transition.Group>
+          <ul className="sub-menu">
+            {this.props.subItems.map(subItem => <MenuSubItem {...subItem} />)}
+          </ul>
+        </AnimateHeight>
       </div>
     ) : (
       /* Если нет подменю */
@@ -123,7 +125,7 @@ class MenuItem extends React.Component {
         <NavLink exact className="menu-item" activeClassName="active" 
             to={this.props.link}>
 
-          <Icon className="menu-item-icon" name={this.props.icon} />
+          <i className={classNames("menu-item-icon", this.props.icon)} ></i>
           <span className={classNames('menu-item-label', 
               { hide: this.props.hide })}>{this.props.label}</span>
 
