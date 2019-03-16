@@ -50,6 +50,10 @@ const menuItems = [
   { key: 'uploads', icon: 'fas fa-cloud-upload-alt', label: 'Загрузки', link: '/uploads' },
 ];
 
+...
+
+// in JSX:
+
 <SidebarMenu 
     collapsed={this.state.collapsed} 
     title='Навигация' 
